@@ -1,0 +1,39 @@
+version: "2"
+services:
+  mysql:
+    container_name: MelbDatathon2017mysql
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - ./var/db_data:/var/lib/mysql
+      - ./Code:/var/lib/mysql-files/Code
+      - ./Lookups:/var/lib/mysql-files/Lookups
+      - ./Transactions:/var/lib/mysql-files/Transactions
+    ports:
+      - "3306:3306"
+  influx:
+    container_name: MelbDatathon2017influx
+    image: influxdb:1.1.4-alpine
+    volumes:
+      - ./var/influxdb:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+  py:
+    container_name: MelbDatathon2017python
+    build:
+      context: ./
+      dockerfile: ./docker/python/Dockerfile
+    volumes:
+      - ./src:/opt/melbdatathon2017
+      - ./requirements.txt:/opt/melbdatathon2017/requirements.txt
+  es:
+    container_name: MelbDatathon2017elasticsearch
+    image: elasticsearch:2.4
+    command: elasticsearch -Des.network.host=0.0.0.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./var/es_data:/usr/share/elasticsearch/data
+      - ./docker/elasticsearch:/usr/share/elasticsearch/config

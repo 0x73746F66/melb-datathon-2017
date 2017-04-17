@@ -1,0 +1,47 @@
+{
+  "mappings": {
+    "_default_": {
+      "_timestamp": {
+        "enabled": true
+      },
+      "dynamic_date_formats": [
+        "yyyy-MM-dd",
+        "date_optional_time",
+        "yyyy-MM-dd HH:mm:ss"
+      ],
+      "dynamic_templates": [
+        {
+          "string_fields": {
+            "match": "*",
+            "match_mapping_type": "string",
+            "mapping": {
+              "type": "string",
+              "index": "analyzed",
+              "norms": {
+                "enabled": false
+              },
+              "fields": {
+                "raw": {
+                  "type": "string",
+                  "index": "not_analyzed"
+                }
+              }
+            }
+          }
+        },
+        {
+          "coordinates_fields": {
+            "path_match": "*.coordinates.coordinates",
+            "mapping": {
+              "type": "geo_point",
+              "fielddata": {
+                "format": "compressed",
+                "precision": "1cm"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
